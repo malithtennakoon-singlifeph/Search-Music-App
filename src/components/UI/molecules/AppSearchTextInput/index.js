@@ -10,6 +10,7 @@ export default function index({
   style = {
     paddingTop: '0%',
   },
+  ...props
 }) {
   const {colors} = useTheme();
   const styles = StyleSheet.create({
@@ -35,6 +36,7 @@ export default function index({
         <TextInput
           placeholder={placeholder}
           placeholderTextColor={themeColor ? themeColor : colors.onSurface}
+          {...props}
         />
       </View>
     </View>
