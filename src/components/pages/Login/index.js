@@ -5,6 +5,7 @@ import {login} from '../../../features/auth/authSlice';
 import {AppTextInput} from '../../UI/molecules';
 import {Button} from '../../UI/atoms';
 import {useTheme} from '../../../util/Theme/ThemeContext';
+import {increaseAsync} from '../../../features/count/countSlice';
 
 export default function index() {
   const {colors} = useTheme();

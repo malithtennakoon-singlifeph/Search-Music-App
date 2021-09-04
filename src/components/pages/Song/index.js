@@ -1,12 +1,16 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Image, View} from 'react-native';
 import moment from 'moment';
 import {useTheme} from '../../../util/Theme/ThemeContext';
 import {Button, Icon, Text} from '../../UI/atoms';
 
+import Slider from '@react-native-community/slider';
+
 export default function index({route, navigation}) {
   const {Data} = route.params;
   const {colors} = useTheme();
+  const [seekerValue, setSeekerValue] = useState(0);
+  const [playing, setPlaying] = useState(false);
 
   const styles = StyleSheet.create({
     mainContainer: {
@@ -44,11 +48,44 @@ export default function index({route, navigation}) {
       <View
         style={{
           flex: 0.25,
-          backgroundColor: 'green',
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Button title={<Icon name="play" size={30} />} />
+        <Button
+          title={<Icon name={playing ? 'stop' : 'play'} size={35} />}
+          buttonStyle={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 60,
+            height: 60,
+            borderRadius: 50,
+            margin: 10,
+            backgroundColor: colors.secondary,
+          }}
+          onPress={() => setPlaying(playing => !playing)}
+        />
+        <View
+          style={{
+            width: '90%',
+          }}>
+          <Slider
+            style={{width: '100%'}}
+            maximumValue={100}
+            minimumValue={0}
+            onValueChange={val => setSeekerValue(val)}
+            thumbTintColor={colors.primary}
+            minimumTrackTintColor={colors.primary}
+          />
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginHorizontal: '4%',
+            }}>
+            <Text>{seekerValue}</Text>
+            <Text>100</Text>
+          </View>
+        </View>
       </View>
     </View>
   );

@@ -1,13 +1,17 @@
 import React from 'react';
 import {StyleSheet, FlatList, View} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import {useTheme} from '../../../util/Theme/ThemeContext';
 import {AppSearchTextInput} from '../../UI/molecules';
 import {AppSearchItem} from '../../UI/molecules';
-import {Text, Icon} from '../../UI/atoms';
+import {Button, Text} from '../../UI/atoms';
+import {increaseAsync, increment} from '../../../features/count/countSlice';
+import {add} from '../../../features/search/searchSlice';
 
 export default function index({navigation}) {
   const {colors} = useTheme();
-  const [data, setData] = React.useState([]);
+  const dispatch = useDispatch();
+  const data = useSelector(state => state.search.value);
   const [text, setText] = React.useState('');
   const [error, setError] = React.useState(false);
 
@@ -25,9 +29,9 @@ export default function index({navigation}) {
           setError(true);
         }
       })
-      .then(data => (data ? setData(data.results) : setData([])))
+      .then(data => (data ? dispatch(add(data.results)) : dispatch(add([]))))
       .catch(error => console.log(error));
-    console.log(data);
+    dispatch(increment());
   }, [text]);
 
   const styles = StyleSheet.create({
@@ -69,6 +73,7 @@ export default function index({navigation}) {
         themeColor={colors.onSurface}
         onChangeText={text => setText(text)}
       />
+      <Button title="Add" onPress={() => dispatch(increaseAsync())} />
       <FlatList
         renderItem={renderItem}
         data={data}
