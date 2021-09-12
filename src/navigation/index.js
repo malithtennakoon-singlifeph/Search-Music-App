@@ -6,10 +6,8 @@ import {AppearanceProvider} from 'react-native-appearance';
 import {useSelector} from 'react-redux';
 import {ThemeProvider} from '../util/Theme/ThemeContext';
 
-const authenticated = false;
-
 export default function navigation() {
-  const authenticated = useSelector(state => state.auth.value);
+  const authenticated = useSelector(state => state.auth.loginStatus);
   return (
     <AppearanceProvider>
       <ThemeProvider>

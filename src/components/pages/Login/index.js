@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {useDispatch} from 'react-redux';
-import {login} from '../../../features/auth/authSlice';
+import {login} from '../../../redux/rootActions';
 import {AppTextInput} from '../../UI/molecules';
 import {Button} from '../../UI/atoms';
 import {useTheme} from '../../../util/Theme/ThemeContext';
+import {LOGIN} from '../../../redux/auth/types';
 
 export default function index() {
   const {colors} = useTheme();
@@ -34,7 +35,7 @@ export default function index() {
         label="Password"
         themeColor={colors.onSurface}
       />
-      <Button title="Login" onPress={() => dispatch(login())} />
+      <Button title="Login" onPress={() => dispatch(login({type: LOGIN}))} />
     </View>
   );
 }
