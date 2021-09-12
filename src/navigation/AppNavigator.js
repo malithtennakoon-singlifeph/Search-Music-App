@@ -2,17 +2,18 @@ import React, {useState} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useSelector} from 'react-redux';
 import {View} from 'react-native';
-import {Home, Song, Settings} from '../components/pages';
-import {Switch, Text} from '../components/UI/atoms';
+import {Home, Song, Settings, SavedSongs} from '../components/pages';
+import {Button, Switch, Text} from '../components/UI/atoms';
 import {useTheme} from '../util/Theme/ThemeContext';
+import navigation from '.';
 
 const Stack = createNativeStackNavigator();
 
-export default function AppNavigator() {
+export default function AppNavigator({navigation}) {
   const {colors, setScheme, isDark} = useTheme();
   const [isEnabled, setIsEnabled] = useState(false);
 
-  const count = useSelector(state => state.count.value);
+  const count = useSelector(state => state.auth.count);
 
   const toggleSwitch = () => {
     isDark ? setScheme('light') : setScheme('dark');
@@ -34,6 +35,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Song" component={Song} />
       <Stack.Screen name="Settings" component={Settings} />
+      <Stack.Screen name="Saved Songs" component={SavedSongs} />
     </Stack.Navigator>
   );
 }

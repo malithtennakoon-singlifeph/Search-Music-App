@@ -1,37 +1,26 @@
 import React from 'react';
-import {StyleSheet, FlatList, View} from 'react-native';
+import {StyleSheet, FlatList, View, TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useTheme} from '../../../util/Theme/ThemeContext';
 import {AppSearchTextInput} from '../../UI/molecules';
 import {AppSearchItem} from '../../UI/molecules';
-import {Button, Text} from '../../UI/atoms';
-import {increaseAsync, increment} from '../../../features/count/countSlice';
-import {add} from '../../../features/search/searchSlice';
+import {getSearch, save_data, search} from '../../../redux/rootActions';
+import {Text, Button, Icon} from '../../UI/atoms';
 
 export default function index({navigation}) {
   const {colors} = useTheme();
   const dispatch = useDispatch();
-  const data = useSelector(state => state.search.value);
+  const data = useSelector(state => state.search.data);
+  //const [data, setData] = React.useState([]);
   const [text, setText] = React.useState('');
   const [error, setError] = React.useState(false);
 
-  React.useEffect(async () => {
-    await fetch(
-      `https://itunes.apple.com/search?term=${text.replace(
-        ' ',
-        '+',
-      )}&limit=15&media=music&entity=song`,
-    )
-      .then(res => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          setError(true);
-        }
-      })
-      .then(data => (data ? dispatch(add(data.results)) : dispatch(add([]))))
-      .catch(error => console.log(error));
-    dispatch(increment());
+  React.useEffect(() => {
+    dispatch(search(text));
+    // let payload = dispatch(getSearch(text));
+    // console.log('Payload', payload);
+    // //setData(dispatch(getSearch(text)));
+    dispatch({type: 'COUNT'});
   }, [text]);
 
   const styles = StyleSheet.create({
@@ -49,12 +38,13 @@ export default function index({navigation}) {
     },
   });
 
+  const onClickItem = item => {
+    dispatch(save_data(item));
+    navigation.navigate('Song', {Data: item});
+  };
+
   const renderItem = ({item}) => (
-    <AppSearchItem
-      key={index}
-      Data={item}
-      onPress={() => navigation.navigate('Song', {Data: item})}
-    />
+    <AppSearchItem key={index} Data={item} onPress={() => onClickItem(item)} />
   );
 
   const NoRenderItems = () => {
@@ -73,7 +63,6 @@ export default function index({navigation}) {
         themeColor={colors.onSurface}
         onChangeText={text => setText(text)}
       />
-      <Button title="Add" onPress={() => dispatch(increaseAsync())} />
       <FlatList
         renderItem={renderItem}
         data={data}
@@ -81,6 +70,24 @@ export default function index({navigation}) {
         style={styles.scrollViewContainer}
         ListEmptyComponent={<NoRenderItems />}
       />
+      <TouchableOpacity
+        style={{
+          position: 'absolute',
+          bottom: 30,
+          right: 30,
+          backgroundColor: colors.primary,
+          borderRadius: 20,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        onPress={() => navigation.navigate('Saved Songs')}>
+        <Icon
+          name="music"
+          size={25}
+          color="black"
+          iconStyles={{margin: '4%', alignSelf: 'center'}}
+        />
+      </TouchableOpacity>
     </View>
   );
 }
